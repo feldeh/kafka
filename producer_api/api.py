@@ -11,7 +11,7 @@ async def data(data: dict):
 
     print(data)
     producer = KafkaProducer(
-        bootstrap_servers=['localhost:9092'],
+        bootstrap_servers=['kafka:9093'],
         value_serializer=lambda x: json.dumps(x).encode('utf-8')
     )
 
