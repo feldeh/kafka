@@ -1,5 +1,5 @@
 from kafka import KafkaConsumer
-from json import loads
+import json
 from time import sleep
 
 
@@ -8,6 +8,7 @@ PRODUCT_CATEGORIES = {
     "Bakery": ["bread", "croissant", "baguette", "cake"],
     "Drink": ["water", "soda", "beer", "wine"]
 }
+
 
 def process_data(data):
     total_price = 0
@@ -26,22 +27,20 @@ consumer = KafkaConsumer(
     auto_offset_reset='latest',
     enable_auto_commit=True,
     group_id='my-group-id',
-    value_deserializer=lambda x: loads(x.decode('utf-8'))
+    value_deserializer=lambda x: json.loads(x.decode('utf-8'))
 )
-consumer.subscribe(topics=["delhaize_shop"])
 
 
+event_list = []
 
+with open("database.json", "w") as db:
+    json.dump(event_list, db)
 
 for event in consumer:
-
-    event = event.value
-    processed_event = process_data(event)
-    sleep(0.5)
-
-
-
-
-
-
-
+    with open("database.json", "w") as db:
+        event_value = event.value
+        print(event_value)
+        processed_event = process_data(event_value)
+        event_list.append(processed_event)
+        json.dump(event_list, db, indent=4)
+        sleep(0.1)
