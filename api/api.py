@@ -21,4 +21,4 @@ async def data(data: dict):
     producer.flush()
     sleep(0.5)
 
-    return {"body": data}
+    return {"status": "ok"}
